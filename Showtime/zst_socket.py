@@ -84,8 +84,8 @@ class ZstSocket(threading.Thread):
                     name=data[ZstMethod.METHOD_NAME],
                     node=data[ZstMethod.METHOD_ORIGIN_NODE],
                     accessMode=data[ZstMethod.METHOD_ACCESSMODE],
-                    args=data[ZstMethod.METHOD_ARGS] if hasAttr(ZstMethod.METHOD_ARGS) else None,
-                    output=data[ZstMethod.METHOD_OUTPUT]) if hasAttr(ZstMethod.METHOD_OUTPUT) else None
+                    args=data[ZstMethod.METHOD_ARGS] if ZstMethod.METHOD_ARGS in data else None,
+                    output=data[ZstMethod.METHOD_OUTPUT]) if ZstMethod.METHOD_OUTPUT in data else None
                 return MethodMessage(method=method, data=methodData)
             else:
                 return MethodMessage(method=method, data=data)
