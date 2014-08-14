@@ -1,5 +1,6 @@
 import sys
 import time
+import json
 from Showtime.zst_node import *
 
 reader = ZstNode("MethodEditor", sys.argv[1])
@@ -29,7 +30,9 @@ if nodeName in nodeList:
             if len(node.methods[methodName].args) > 0:
                 for argname, argvalue in node.methods[methodName].args.iteritems():
                     args[argname] = raw_input("Enter a value for the argument " + str(argname) + ": ")
-            reader.update_remote_method(node.methods[methodName], args)
+            result = reader.update_remote_method(node.methods[methodName], args)
+            if result:
+                print json.dumps(result.output, indent=1, sort_keys=True)
             time.sleep(1)
     except KeyboardInterrupt:
         reader.close()

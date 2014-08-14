@@ -98,7 +98,7 @@ class ZstNode(ZstBase):
     # ----------------------------------------------
     def receive_message(self, message):
         if message.method in self.methods:
-            print "Matched local method '{0}' from '{1}' with value '{2} and args {3}'".format(
+            print "Matched local method '{0}' from '{1}' with value '{2}' and args {3}'".format(
                 message.method,
                 message.data.node,
                 message.data.output,
