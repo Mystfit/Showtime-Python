@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
-setup(name='ZmqShowtime',
-      version='0.1a',
+setup(name='Showtime-Python',
+      version='1.0',
       description='The ZstShowtime library is designed for live performances using ZeroMQ.',
       author='Byron Mallett',
       author_email='byronated@gmail.com',
