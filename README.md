@@ -5,7 +5,7 @@ What is this?
 -------------
 Showtime was designed to let multiple programs running in multiple languages talk to each other whilst trying to cut down on the clutter required in setting up connections and discovering each other. 
 
-The project originated from wanting to bypass the hassles I was having when trying to hook the music software Ableton Live up to Unity using OSC. I wrote the first version of this library using Python and C# to let Unity control Ableton Live through its underlying Python API, without needing to use any MIDI or OSC whatsoever, and that eventually evolved into the Java and Processing ports as well.
+The project originated from wanting to bypass the hassles I was having when trying to hook Ableton Live up to Unity3D using OSC. I wrote the first version of this library using Python and C# to let Unity control Ableton Live through its underlying Python API, without needing to use any MIDI or OSC whatsoever, and that eventually evolved into the Java and Processing ports as well.
 
 ### Requirements ###
  - Python 2.7
@@ -13,7 +13,7 @@ The project originated from wanting to bypass the hassles I was having when tryi
 Installation
 ---------------------
 - Using pip:
-```
+```l
 pip install Showtime-Python
 ```
 - From source:
@@ -44,7 +44,7 @@ localNode.start()
 ```
 
 ### Exploring the stage ###
- - Get a lost of all availble nodes and their methods from the stage.
+ - Get a list of all availble nodes and their methods from the stage.
 ```
 peerList = localNode.request_node_peerlinks()
 ```
