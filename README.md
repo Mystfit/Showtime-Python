@@ -7,7 +7,7 @@ Showtime was designed to let multiple programs running in multiple languages tal
 
 The project originated from wanting to bypass the hassles I was having when trying to hook the music software Ableton Live up to Unity using OSC. I wrote the first version of this library using Python and C# to let Unity control Ableton Live through its underlying Python API, without needing to use any MIDI or OSC whatsoever, and that eventually evolved into the Java and Processing ports as well.
 
-### Requirements ### 
+### Requirements ###
  - Python 2.7
 
 Installation
