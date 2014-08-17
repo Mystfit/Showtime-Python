@@ -1,6 +1,6 @@
 import zmq
 import time
-from zst_node import ZstNode
+from Showtime.zst_node import ZstNode
 
 
 class ZstStage(ZstNode):
@@ -13,7 +13,7 @@ class ZstStage(ZstNode):
         port = 6000
         address = "tcp://*:" + str(port)
         self.reply.socket.bind(address)
-        print "Stage active on address " + self.reply.socket.getsockopt(zmq.LAST_ENDPOINT)
+        print("Stage active on address " + str(self.reply.socket.getsockopt(zmq.LAST_ENDPOINT)))
 
 if __name__ == '__main__':
     stage = ZstStage()
@@ -25,4 +25,4 @@ if __name__ == '__main__':
     except KeyboardInterrupt:
         stage.close()
 
-    print "Finished"
+    print("Finished")

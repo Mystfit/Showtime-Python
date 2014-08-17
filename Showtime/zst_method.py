@@ -1,3 +1,5 @@
+import json
+
 class ZstMethod():
 
     # Message constants
@@ -21,17 +23,17 @@ class ZstMethod():
 
     def run(self, args):
         if not self.callback:
-            print "No external callback set for this method object!"
+            print("No external callback set for this method object!")
             return
         return self.callback(args)
 
     def as_dict(self):
         return {
-            ZstMethod.METHOD_NAME: self.name,
-            ZstMethod.METHOD_ORIGIN_NODE: self.node,
-            ZstMethod.METHOD_ACCESSMODE: self.accessMode,
-            ZstMethod.METHOD_ARGS: self.args,
-            ZstMethod.METHOD_OUTPUT: self.output}
+            ZstMethod.METHOD_NAME: str(self.name),
+            ZstMethod.METHOD_ORIGIN_NODE: str(self.node),
+            ZstMethod.METHOD_ACCESSMODE: str(self.accessMode),
+            ZstMethod.METHOD_ARGS: json.dumps(self.args),
+            ZstMethod.METHOD_OUTPUT: str(self.output)}
 
     def set_Args(self, args):
         for name, value in args.iteritems():

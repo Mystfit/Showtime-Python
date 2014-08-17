@@ -1,14 +1,17 @@
 import threading
 import zmq
 import json
-import Queue
-from zst_base import ZstBase
-from zst_method import ZstMethod
+try:
+    import queue
+except ImportError:
+    import Queue as queue
+from Showtime.zst_base import ZstBase
+from Showtime.zst_method import ZstMethod
 
 
 class ZstSocket(threading.Thread):
 
-    def __init__(self, ctx, sockettype, queue, name=None):
+    def __init__(self, ctx, sockettype, sharedqueue, name=None):
         threading.Thread.__init__(self, name=name)
         self.ctx = ctx
         self.exitFlag = 0
@@ -18,8 +21,8 @@ class ZstSocket(threading.Thread):
 
         self.socket = self.ctx.socket(sockettype)
         self.socket.setsockopt(zmq.LINGER, 0)
-        self.inMailbox = queue
-        self.outMailbox = Queue.LifoQueue()
+        self.inMailbox = sharedqueue
+        self.outMailbox = queue.LifoQueue()
 
         if sockettype == zmq.REP or sockettype == zmq.SUB:
             self.poller = zmq.Poller()
@@ -37,13 +40,13 @@ class ZstSocket(threading.Thread):
                 self.handle_requests()
             else:
                 self.handle_outgoing()
-        print self.name + " received kill signal"
+        print(self.name + " received kill signal")
         self.socket.close()
 
     def handle_outgoing(self):
         try:
             message = self.outMailbox.get(True, ZstBase.TIMEOUT)
-        except Queue.Empty:
+        except queue.Empty:
             return
         self.send_immediate(message.method, message.data)
 
@@ -63,9 +66,10 @@ class ZstSocket(threading.Thread):
             outData = {}
             if methodData:
                 outData = methodData.as_dict()
-            self.socket.send_multipart([str(method), json.dumps(outData)])
-        except Exception, e:
-            print e
+            print(str.encode(json.dumps(outData), "utf-8"))
+            self.socket.send_multipart([str.encode(method, "utf-8"), str.encode(json.dumps(outData), "utf-8")])
+        except Exception as e:
+            print(e)
 
     def recv(self):
         try:
@@ -75,6 +79,7 @@ class ZstSocket(threading.Thread):
 
     def recv_immediate(self, noblock=None):
         try:
+            print("Got a message!")
             msg = self.socket.recv_multipart(zmq.NOBLOCK) if noblock else self.socket.recv_multipart()
             method = msg[0]
             method = method if method else None
@@ -89,8 +94,8 @@ class ZstSocket(threading.Thread):
                 return MethodMessage(method=method, data=methodData)
             else:
                 return MethodMessage(method=method, data=data)
-        except zmq.ZMQError, e:
-            print e
+        except zmq.ZMQError as e:
+            print(e)
         return None
 
 class MethodMessage():

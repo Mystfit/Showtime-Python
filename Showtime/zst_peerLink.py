@@ -1,5 +1,5 @@
 import zmq
-from zst_method import ZstMethod
+from Showtime.zst_method import ZstMethod
 
 
 class ZstPeerLink():
@@ -30,9 +30,9 @@ class ZstPeerLink():
             methodlist[name] = method.as_dict()
 
         return {
-            ZstPeerLink.NAME: self.name,
-            ZstPeerLink.REPLY_ADDRESS: self.replyAddress,
-            ZstPeerLink.PUBLISHER_ADDRESS: self.publisherAddress,
+            ZstPeerLink.NAME: unicode(self.name),
+            ZstPeerLink.REPLY_ADDRESS: unicode(self.replyAddress),
+            ZstPeerLink.PUBLISHER_ADDRESS: unicode(self.publisherAddress),
             ZstPeerLink.METHOD_LIST: methodlist}
 
     @staticmethod

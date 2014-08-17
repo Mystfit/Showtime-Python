@@ -8,5 +8,5 @@ setup(name='Showtime-Python',
       url='http://github.com/Mystfit/Showtime',
       license='MIT',
       install_requires=["pyzmq"],
-      packages=find_packages()
-      )
+      packages=find_packages(),
+)

@@ -1,7 +1,9 @@
 import zmq
 import threading
-import Queue
-
+try:
+    import queue
+except ImportError:
+    import Queue as queue
 
 class ZstBase(threading.Thread):
 
@@ -15,7 +17,7 @@ class ZstBase(threading.Thread):
         self.setDaemon(True)
 
         # Create queue
-        self.incomingQueue = Queue.LifoQueue()
+        self.incomingQueue = queue.LifoQueue()
         self.ctx = zmq.Context()
 
     def run(self):
@@ -24,16 +26,16 @@ class ZstBase(threading.Thread):
     def close(self):
         self.exitFlag = 1
         self.ctx.destroy()
-        print "\nCleanup complete"
+        print("\nCleanup complete")
 
     def listen(self):
-        print 'Node listening for requests...'
+        print("Node listening for requests...")
         while not self.exitFlag:
             try:
                 message = self.incomingQueue.get(True, ZstBase.TIMEOUT)
                 if message:
                     self.receive_message(message)
-            except Queue.Empty:
+            except queue.Empty:
                 pass
         self.join()
 
