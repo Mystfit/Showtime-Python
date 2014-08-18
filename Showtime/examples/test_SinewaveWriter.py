@@ -3,9 +3,15 @@ import math
 import time
 import threading
 from Showtime.zst_node import *
+import test_base
+
+# Convert Python inputs
+if sys.version[0] == "3":
+    raw_input = input
 
 
 class Sinewave(threading.Thread):
+
     def __init__(self, reader, node, method, args):
         threading.Thread.__init__(self)
         self.setDaemon(True)
@@ -25,7 +31,8 @@ class Sinewave(threading.Thread):
             count = count % 100
             value = (((math.sin(count) + 1) * 0.2) + 0.3) * 127
             self.args["value"] = value
-            self.reader.update_remote_method(self.node.methods[self.method], self.args)
+            self.reader.update_remote_method(
+                self.node.methods[self.method], self.args)
             time.sleep(0.01)
 
 reader = ZstNode("SinewaveWriter", sys.argv[1])
@@ -35,12 +42,12 @@ nodeList = reader.request_node_peerlinks()
 
 print("Nodes on stage:")
 print("---------------")
-for name, peer in nodeList.iteritems():
+for name, peer in list(nodeList.items()):
     print(name, json.dumps(peer.as_dict(), indent=1, sort_keys=True))
 print("")
 
-nodeName = str(raw_input("Enter a node to connect to: "))
-methodName = str(raw_input("Enter a method to control: "))
+nodeName = raw_input("Enter a node to connect to: ")
+methodName = raw_input("Enter a method to control: ")
 
 if nodeName in nodeList:
     node = nodeList[nodeName]
@@ -50,8 +57,9 @@ if nodeName in nodeList:
     time.sleep(1)
 
     args = {}
-    for argname, argvalue in node.methods[methodName].args.iteritems():
-        args[argname] = raw_input("Enter a value for the argument " + str(argname) + ": ")
+    for argname, argvalue in list(node.methods[methodName].args.items()):
+        args[argname] = raw_input(
+            "Enter a value for the argument " + str(argname) + ": ")
 
     sinewave = Sinewave(reader, node, methodName, args)
     sinewave.start()

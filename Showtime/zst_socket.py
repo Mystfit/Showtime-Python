@@ -66,8 +66,8 @@ class ZstSocket(threading.Thread):
             outData = {}
             if methodData:
                 outData = methodData.as_dict()
-            print(str.encode(json.dumps(outData), "utf-8"))
-            self.socket.send_multipart([str.encode(method, "utf-8"), str.encode(json.dumps(outData), "utf-8")])
+            self.socket.send_multipart(
+                [method.encode("utf-8"), json.dumps(outData).encode("utf-8")])
         except Exception as e:
             print(e)
 
@@ -79,18 +79,21 @@ class ZstSocket(threading.Thread):
 
     def recv_immediate(self, noblock=None):
         try:
-            print("Got a message!")
-            msg = self.socket.recv_multipart(zmq.NOBLOCK) if noblock else self.socket.recv_multipart()
-            method = msg[0]
+            msg = self.socket.recv_multipart(
+                zmq.NOBLOCK) if noblock else self.socket.recv_multipart()
+            method = msg[0].decode('utf-8')
             method = method if method else None
-            data = json.loads(msg[1]) if msg[1] else None
+            methodBytes = msg[1]
+            methodStr = methodBytes.decode('utf-8') if methodBytes else None
+            data = json.loads(methodStr) if methodStr else None
             if data:
                 methodData = ZstMethod(
                     name=data[ZstMethod.METHOD_NAME],
                     node=data[ZstMethod.METHOD_ORIGIN_NODE],
                     accessMode=data[ZstMethod.METHOD_ACCESSMODE],
-                    args=data[ZstMethod.METHOD_ARGS] if ZstMethod.METHOD_ARGS in data else None,
-                    output=data[ZstMethod.METHOD_OUTPUT] if ZstMethod.METHOD_OUTPUT in data else None)
+                    args=data[
+                        ZstMethod.METHOD_ARGS] if ZstMethod.METHOD_ARGS in data else None,
+                    output=data[ZstMethod.METHOD_OUTPUT] if ZstMethod.METHOD_OUTPUT in data and data[ZstMethod.METHOD_OUTPUT] else None)
                 return MethodMessage(method=method, data=methodData)
             else:
                 return MethodMessage(method=method, data=data)
@@ -98,7 +101,9 @@ class ZstSocket(threading.Thread):
             print(e)
         return None
 
+
 class MethodMessage():
+
     def __init__(self, method, data):
         self.method = method
         self.data = data

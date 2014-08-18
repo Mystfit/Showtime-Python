@@ -32,11 +32,11 @@ class ZstMethod():
             ZstMethod.METHOD_NAME: str(self.name),
             ZstMethod.METHOD_ORIGIN_NODE: str(self.node),
             ZstMethod.METHOD_ACCESSMODE: str(self.accessMode),
-            ZstMethod.METHOD_ARGS: json.dumps(self.args),
-            ZstMethod.METHOD_OUTPUT: str(self.output)}
+            ZstMethod.METHOD_ARGS: self.args,
+            ZstMethod.METHOD_OUTPUT: self.output}
 
     def set_Args(self, args):
-        for name, value in args.iteritems():
+        for name, value in list(args.items()):
             if name in self.args:
                 self.args[name] = value
 
@@ -44,7 +44,7 @@ class ZstMethod():
     def compare_arg_lists(args1, args2):
         if not args1 and not args2:
             return True
-        for name, value in args1.iteritems():
+        for name, value in list(args1.items()):
             if name not in args2:
                 return False
         return True
@@ -52,7 +52,7 @@ class ZstMethod():
     @staticmethod
     def build_local_methods(methods):
         methodList = {}
-        for methodname, method in methods.iteritems():
+        for methodname, method in list(methods.items()):
             localMethod = ZstMethod(
                 name=method[ZstMethod.METHOD_NAME],
                 node=method[ZstMethod.METHOD_ORIGIN_NODE],

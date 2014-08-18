@@ -31,8 +31,6 @@ class ZstNode(ZstBase):
         self.methods = {}
         self.peers = {}
 
-        print(stageAddress)
-
         # Sockets
         self.stageAddress = stageAddress
         if self.stageAddress:
@@ -67,7 +65,7 @@ class ZstNode(ZstBase):
         print("PUB-->: Announcing that we're leaving."  )
         self.publisher.send(ZstNode.DISCONNECT_PEER, ZstMethod(ZstNode.DISCONNECT_PEER, self.id))
 
-        for peer, peerlink in self.peers.iteritems():
+        for peer, peerlink in list(self.peers.items()):
             peerlink.disconnect()
 
         if self.stage:
@@ -85,15 +83,18 @@ class ZstNode(ZstBase):
         ZstBase.close(self)
 
     def disconnect_peer(self, methodData):
-        print("Peer '{0}' is leaving.".format(methodData.node))
+        print("Node '{0}' is leaving.".format(methodData.node))
         if methodData.node in self.peers:
             print("Disconnecting address {0}".format(self.peers[methodData.node].publisherAddress))
             self.subscriber.socket.disconnect(self.peers[methodData.node].publisherAddress)
             self.peers[methodData.node].disconnect()
             del self.peers[methodData.node]
-        print("Peers now contains:")
-        for peer in self.peers.iteritems():
-            print(peer)
+        if(len(self.peers) > 0):
+            print("Nodes remaining:")
+            for peer in self.peers:
+                print(peer)
+        else:
+            print("Stage now empty.")
 
     # ----------------------------------------------
     # Recieve updates from nodes we're interested in
@@ -221,7 +222,7 @@ class ZstNode(ZstBase):
 
     def reply_node_peerlinks(self, args):
         peerList = {}
-        for peerName, peerData in self.peers.iteritems():
+        for peerName, peerData in list(self.peers .items()):
             peerList[peerName] = peerData.as_dict()
 
         request = ZstMethod(
@@ -241,7 +242,7 @@ class ZstNode(ZstBase):
 
     def reply_method_list(self, args):
         methodList = {}
-        for name, method in self.methods.iteritems():
+        for name, method in list(self.methods.items()):
             methodList[name] = method.as_dict()
 
         request = ZstMethod(
@@ -262,8 +263,8 @@ class ZstNode(ZstBase):
 
     def reply_all_peer_methods(self, args):
         methodList = {}
-        for peerName, peer in self.peers.iteritems():
-            for methodName, method in peer.methods.iteritems():
+        for peerName, peer in list(self.peers.items()):
+            for methodName, method in list(peer.methods.items()):
                 methodList[methodName] = method.as_dict()
         request = ZstMethod(
             name=REPLY_ALL_PEER_METHODS,

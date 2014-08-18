@@ -26,23 +26,25 @@ class ZstPeerLink():
 
     def as_dict(self):
         methodlist = {}
-        for name, method in self.methods.iteritems():
+        for name, method in list(self.methods.items()):
             methodlist[name] = method.as_dict()
 
         return {
-            ZstPeerLink.NAME: unicode(self.name),
-            ZstPeerLink.REPLY_ADDRESS: unicode(self.replyAddress),
-            ZstPeerLink.PUBLISHER_ADDRESS: unicode(self.publisherAddress),
+            ZstPeerLink.NAME: self.name,
+            ZstPeerLink.REPLY_ADDRESS: self.replyAddress,
+            ZstPeerLink.PUBLISHER_ADDRESS: self.publisherAddress,
             ZstPeerLink.METHOD_LIST: methodlist}
 
     @staticmethod
     def build_local_peerlinks(peers):
         peerlinks = {}
-        for name, peer in peers.iteritems():
-            methodList =  ZstMethod.build_local_methods(peer[ZstPeerLink.METHOD_LIST])
-            peerlinks[name] = ZstPeerLink(
-                peer[ZstPeerLink.NAME],
-                peer[ZstPeerLink.REPLY_ADDRESS],
-                peer[ZstPeerLink.PUBLISHER_ADDRESS],
-                methodList)
+        if(peers):
+            if(len(peers) > 0):
+                for name, peer in list(peers.items()):
+                    methodList =  ZstMethod.build_local_methods(peer[ZstPeerLink.METHOD_LIST])
+                    peerlinks[name] = ZstPeerLink(
+                        peer[ZstPeerLink.NAME],
+                        peer[ZstPeerLink.REPLY_ADDRESS],
+                        peer[ZstPeerLink.PUBLISHER_ADDRESS],
+                        methodList)
         return peerlinks

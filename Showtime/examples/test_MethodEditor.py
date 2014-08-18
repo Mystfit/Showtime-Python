@@ -2,19 +2,19 @@ import sys
 import time
 import json
 from Showtime.zst_node import *
+import test_base
+
+# Convert Python inputs
+if sys.version[0] == "3":
+    raw_input = input
 
 reader = ZstNode("MethodEditor", sys.argv[1])
 reader.start()
 nodeList = reader.request_node_peerlinks()
+test_base.listStageNodes(nodeList)
 
-print("Nodes on stage:")
-print("---------------")
-for name, peer in nodeList.iteritems():
-    print(name, json.dumps(peer.as_dict(), indent=1, sort_keys=True))
-print("")
-
-nodeName = str(raw_input("Enter a node to connect to: "))
-methodName = str(raw_input("Enter a method to control: "))
+nodeName = raw_input("Enter a node to connect to: ")
+methodName = raw_input("Enter a method to control: ")
 
 if nodeName in nodeList:
     node = nodeList[nodeName]
@@ -28,9 +28,11 @@ if nodeName in nodeList:
         while True:
             args = {}
             if len(node.methods[methodName].args) > 0:
-                for argname, argvalue in node.methods[methodName].args.iteritems():
-                    args[argname] = raw_input("Enter a value for the argument " + str(argname) + ": ")
-            result = reader.update_remote_method(node.methods[methodName], args)
+                for argname, argvalue in list(node.methods[methodName].args.items()):
+                    args[argname] = raw_input(
+                        "Enter a value for the argument " + str(argname) + ": ")
+            result = reader.update_remote_method(
+                node.methods[methodName], args)
             if result:
                 print(json.dumps(result.output, indent=1, sort_keys=True))
             time.sleep(1)
