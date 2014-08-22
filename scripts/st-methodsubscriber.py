@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import sys
 import time
 from Showtime.zst_node import *

@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 import zmq
 import time
 from Showtime.zst_node import ZstNode
