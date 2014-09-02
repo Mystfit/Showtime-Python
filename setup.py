@@ -5,7 +5,7 @@ readme = open('README.rst', 'r')
 README_TXT = readme.read()
 
 setup(name='Showtime-Python',
-      version='1.0.5',
+      version='1.0.5.1',
       description='Showtime-Python allows you to connect multiple programs for live performances using nodes.',
       long_description=README_TXT,
       author='Byron Mallett',
