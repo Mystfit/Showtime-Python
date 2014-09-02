@@ -12,8 +12,23 @@ from optparse import OptionParser
 
 class MidiNode(ZstNode):
 
-    NOTE_ON = 0x90
-    NOTE_OFF = 0x80
+    NOTE_OFF = 0x8
+    NOTE_ON = 0x9
+    AFTERTOUCH = 0xA
+    CC = 0xB
+    PROGRAM = 0xC
+    CHAN_PRESSURE = 0xD
+    PITCH_WHEEL = 0xE
+
+    midiLookup = {
+        NOTE_OFF: "nOff",
+        NOTE_ON: "nOn",
+        AFTERTOUCH: "at",
+        CC: "cc",
+        PROGRAM: "prog",
+        CHAN_PRESSURE: "chP",
+        PITCH_WHEEL: "pWhl"
+    }
 
     MIDI_IN = "in"
     MIDI_OUT = "out"
@@ -24,6 +39,8 @@ class MidiNode(ZstNode):
         # Setup midi port 
         self.midi_out = None
         self.midi_in = None
+
+        print MidiNode.midiLookup
 
         self.midi_out = self.createMidi(MidiNode.MIDI_OUT, midiPortOut)
         self.midi_in = self.createMidi(MidiNode.MIDI_IN, midiPortIn)
@@ -101,8 +118,20 @@ class MidiNode(ZstNode):
     #         self.midi_out.send_message([trigger, int(message.args["note"]), velocity])
 
     def midi_from_device(self, message, timestamp):
-        print message
-        self.update_local_method_by_name("midi_from_device", {"status":message[0], "dataA":message[1], })
+        status = hex(message[0])[2:]
+        statusint = int("0x" + status[0], 16)
+        midiType = MidiNode.midiLookup[statusint]
+        channel = int("0x" + status[1], 16)
+
+        midiOutput = {
+            "type": midiType,
+            "channel": channel,
+            "dataA": message[1]}
+
+        if len(message) > 2:
+            midiOutput["dataB"] = message[2]
+
+        self.update_local_method_by_name("midi_from_device", midiOutput)
 
         # if self.midi_out:
         #     self.midi_out.send_message([message[0], message[1], message[2]])
@@ -116,7 +145,7 @@ class MidiNode(ZstNode):
 
 
 if __name__ == '__main__':
-    
+
     # Options parser
     parser = OptionParser()
     parser.add_option("-s", "--stagehost", action="store", dest="stageaddress", type="string", help="IP address of the Showtime stage.", default="localhost")
