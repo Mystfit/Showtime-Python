@@ -20,7 +20,7 @@ def listStageNodes(nodelist):
 if __name__ == '__main__':
     def echo_method(methodData):
         print("Method: " + str(methodData.name) + " Arguments: " +
-              str(methodData.args) + " Output: " + str(methodData.output))
+              str(methodData.args) + " Output: " + json.dumps(methodData.output))
 
     subscriber = ZstNode("MethodSubscriber", sys.argv[1])
     subscriber.start()

@@ -5,14 +5,14 @@ readme = open('README.rst', 'r')
 README_TXT = readme.read()
 
 setup(name='Showtime-Python',
-      version='1.0.5.1',
+      version='1.0.6',
       description='Showtime-Python allows you to connect multiple programs for live performances using nodes.',
       long_description=README_TXT,
       author='Byron Mallett',
       author_email='byronated@gmail.com',
       url='http://github.com/Mystfit/Showtime',
       license='MIT',
-      install_requires=["pyzmq==14.3.1"],
+      install_requires=["pyzmq==14.3.1", "zeroconf"],
       packages=find_packages(),
       classifiers=[
       'Development Status :: 4 - Beta',
@@ -31,8 +31,9 @@ setup(name='Showtime-Python',
       'Intended Audience :: Developers',
         'Natural Language :: English'
       ],
-      scripts=['scripts/st-stage.py', 
-      			'scripts/st-methodeditor.py',
-      			'scripts/st-sinewriter.py',
-      			'scripts/st-methodsubscriber.py']
+      scripts=[
+      	'scripts/st-methodeditor.py',
+      	'scripts/st-sinewriter.py',
+      	'scripts/st-methodsubscriber.py',
+            'scripts/st-stage.py']
       )

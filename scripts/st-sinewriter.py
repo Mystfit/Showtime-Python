@@ -20,7 +20,7 @@ def listStageNodes(nodelist):
 
 class Sinewave(threading.Thread):
 
-    def __init__(self, reader, node, method, args):
+    def __init__(self, reader, node, method, args, scale):
         threading.Thread.__init__(self)
         self.setDaemon(True)
         self.reader = reader
@@ -28,6 +28,7 @@ class Sinewave(threading.Thread):
         self.exitFlag = 0
         self.node = node
         self.method = method
+        self.scale = scale
 
     def stop(self):
         self.exitFlag = 1
@@ -37,7 +38,8 @@ class Sinewave(threading.Thread):
         while not self.exitFlag:
             count += 0.01
             count = count % 100
-            value = (((math.sin(count) + 1) * 0.2) + 0.3) * 127
+            value = (math.sin(count) + 1) * 0.5 * self.scale
+            print value
             self.args["value"] = value
             self.reader.update_remote_method(
                 self.node.methods[self.method], self.args)
@@ -47,6 +49,10 @@ class Sinewave(threading.Thread):
 if __name__ == '__main__':
     reader = ZstNode("SinewaveWriter", sys.argv[1])
     reader.start()
+
+    scale = 1.0
+    if len(sys.argv) > 2:
+        scale = float(sys.argv[2])
 
     nodeList = reader.request_node_peerlinks()
     listStageNodes(nodeList);
@@ -66,7 +72,7 @@ if __name__ == '__main__':
             args[argname] = raw_input(
                 "Enter a value for the argument " + str(argname) + ": ")
 
-        sinewave = Sinewave(reader, node, methodName, args)
+        sinewave = Sinewave(reader, node, methodName, args, scale)
         sinewave.start()
         try:
             while True:
