@@ -22,7 +22,7 @@ class ZstSocket(threading.Thread):
         self.socket = self.ctx.socket(sockettype)
         self.socket.setsockopt(zmq.LINGER, 0)
         self.inMailbox = sharedqueue
-        self.outMailbox = queue.LifoQueue()
+        self.outMailbox = queue.Queue()
 
         if sockettype == zmq.REP or sockettype == zmq.SUB:
             self.poller = zmq.Poller()

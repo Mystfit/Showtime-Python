@@ -17,7 +17,7 @@ class ZstBase(threading.Thread):
         self.setDaemon(True)
 
         # Create queue
-        self.incomingQueue = queue.LifoQueue()
+        self.incomingQueue = queue.Queue()
         self.ctx = zmq.Context()
 
     def run(self):

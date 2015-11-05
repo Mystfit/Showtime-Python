@@ -11,7 +11,7 @@ class ZstMailman(threading.Thread):
         threading.Thread.__init__(self)
         self.exitFlag = 0
         self.callback = messageCallback
-        self.incoming = Queue.LifoQueue()
+        self.incoming = Queue.Queue()
 
     def stop(self):
         self.exitFlag = 1
